@@ -23,7 +23,7 @@ class Shopee :
         self.path = path
         
     def getCookie(self) :
-        url = "https://shopee.co.id/"
+        url = "https://shopee.co.th/"
         co = Options()
         co.add_argument("--nosandbox")
         dp = os.getcwd()+"\\chromedriver.exe"
@@ -36,19 +36,19 @@ class Shopee :
 
     def getSellerId(self) :
         data = {'usernames':[self.sellername]}
-        url = "https://shopee.co.id/api/v1/shop_ids_by_username/"
+        url = "https://shopee.co.th/api/v1/shop_ids_by_username/"
         headers = {'x-csrftoken': self.token,
                    'cookie': self.cookie,
                    'content-type': 'application/json',
                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-                   'referer': 'https://shopee.co.id/'
+                   'referer': 'https://shopee.co.th/'
                    }
         req = requests.post(url, data=json.dumps(data), headers=headers)
         res = req.json()
         self.sellerid = res[0][self.sellername]
 
     def getCatId(self) :
-        url = "https://shopee.co.id/api/v1/shop_collections/?filter_empty=1&limit=20&offset=0&shopid={}".format(self.sellerid)
+        url = "https://shopee.co.th/api/v1/shop_collections/?filter_empty=1&limit=20&offset=0&shopid={}".format(self.sellerid)
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
         req = requests.get(url, headers=headers)
         res = req.json()
@@ -56,7 +56,7 @@ class Shopee :
             self.catid.append(val['shop_collection_id'])
 
     def getItemId(self, catid) :
-        url = "https://shopee.co.id/api/v2/search_items/?by=pop&limit=30&match_id={}&newest=0&order=desc&page_type=shop&shop_categoryids={}".format(self.sellerid, catid)
+        url = "https://shopee.co.th/api/v2/search_items/?by=pop&limit=30&match_id={}&newest=0&order=desc&page_type=shop&shop_categoryids={}".format(self.sellerid, catid)
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
         req = requests.get(url, headers=headers)
         res = req.json()
@@ -64,7 +64,7 @@ class Shopee :
             self.itemid.append(val['itemid'])
 
     def getItemInfo(self, itemid) :
-        url = "https://shopee.co.id/api/v1/item_detail/?item_id={}&shop_id={}".format(itemid, self.sellerid)
+        url = "https://shopee.co.th/api/v1/item_detail/?item_id={}&shop_id={}".format(itemid, self.sellerid)
         headers = {'x-csrftoken': self.token,
                    'cookie': self.cookie,
                    'referer': 'https://shopee.co.id/',
@@ -92,7 +92,7 @@ class Shopee :
 
         images = data['images'].split(",")
         for val in images :
-            datas['images'].append("https://cf.shopee.co.id/file/{}".format(val))
+            datas['images'].append("https://cf.shopee.co.th/file/{}".format(val))
 
         for val in data['models'] :
             if val['stock'] != 0 :
